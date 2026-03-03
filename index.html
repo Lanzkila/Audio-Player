@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nama Converter Anda</title>
+
+  <script src='https://www.youtube.com/iframe_api'/>
+
+    <style>
+body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+#main-container { width: 90%; max-width: 420px; background: #111; padding: 25px; border-radius: 40px; border: 2px solid #0ff; box-shadow: 0 0 25px rgba(0,255,255,0.2); text-align: center; position: relative; }
+
+/* Display & Screen */
+.display-screen { width: 100%; height: 230px; background: #000; border-radius: 25px; margin-bottom: 20px; overflow: hidden; border: 1px solid #222; position: relative; }
+#player-yt { width: 100%; height: 100%; border: none; display: none; }
+#radio-visual { position: absolute; top:0; left:0; width:100%; height:100%; background: #000; display:flex; flex-direction: column; align-items:center; justify-content:center; }
+.v-ring { width: 100px; height: 100px; border: 5px solid #0ff; border-radius: 50%; box-shadow: 0 0 20px #0ff; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { transform: scale(1); opacity:1; } 50% { transform: scale(1.1); opacity:0.6; } 100% { transform: scale(1); opacity:1; } }
+
+/* Meta Info */
+#meta-shelf { background: #1a1a1a; padding: 20px; border-radius: 25px; margin-bottom: 20px; border: 1px solid #333; text-align: left; }
+#track-title { color: #0ff; font-weight: bold; font-size: 16px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#track-artist { color: #888; font-size: 12px; display: block; margin: 5px 0 15px 0; }
+.progress-container { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; }
+#progress-bar { width: 0%; height: 100%; background: #0ff; box-shadow: 0 0 10px #0ff; }
+.time-info { display: flex; justify-content: space-between; font-size: 11px; color: #0ff; margin-top: 8px; font-family: monospace; }
+
+/* Input Group */
+.input-group { background: #1a1a1a; padding: 10px; border-radius: 20px; display: flex; border: 1px solid #333; margin-bottom: 15px; }
+input { background: transparent; border: none; color: #fff; width: 80%; outline: none; padding-left: 15px; font-size: 14px; }
+.btn-play { background: #0ff; border: none; width: 45px; height: 45px; border-radius: 15px; cursor: pointer; color: #000; font-weight: bold; }
+
+/* Dynamic Footer */
+.player-footer { font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
+.player-footer span { color: #0ff; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+     <div id='main-container'>
+    <div class='display-screen'>
+      <div id='player-yt'/>
+      <div id='radio-visual'>
+        <div class='v-ring'/>
+        <span id='live-tag' style='color:#0ff; font-size:10px; margin-top:15px; letter-spacing:2px; display:none;'>LIVE STREAMING</span>
+      </div>
+    </div>
+    
+    <div id='meta-shelf'>
+      <span id='track-title'>Ready...</span>
+      <span id='track-artist'>YouTube / MP3 / Radio</span>
+      <div class='progress-container'><div id='progress-bar'/></div>
+      <div class='time-info'>
+        <span id='cur-time'>0:00</span>
+        <span id='total-time'>0:00</span>
+      </div>
+    </div>
+    
+    <div class='input-group'>
+      <input id='url-in' onkeydown='if(event.keyCode==13) playKirin()' placeholder='Paste Link &amp; Enter...' type='text'/>
+      <button class='btn-play' onclick='playKirin()'>&#9654;</button>
+    </div>
+
+    <div class='player-footer'>
+      &amp;copy; <span id='year-display'/> KIRIN AUDIO INTEL</span>
+    </div>
+
+    <audio id='aud-engine' ontimeupdate='updateAudio()'/>
+  </div>
+
+    <script>
+    var yt, timer;
+
+    // Set Tahun Automatik
+    document.getElementById('year-display').innerHTML = new Date().getFullYear();
+
+    function playKirin() {
+      var u = document.getElementById('url-in').value;
+      var a = document.getElementById('aud-engine');
+      var r = document.getElementById('radio-visual');
+      var y = document.getElementById('player-yt');
+      var l = document.getElementById('live-tag');
+
+      if(yt && yt.destroy) yt.destroy();
+      clearInterval(timer);
+      a.pause(); a.src = "";
+      y.style.display = 'none'; r.style.display = 'flex'; l.style.display = 'none';
+      resetUI();
+
+      if(u.includes('youtube') || u.includes('youtu.be')) {
+        y.style.display = 'block'; r.style.display = 'none';
+        yt = new YT.Player('player-yt', {
+          height: '100%', width: '100%',
+          videoId: getID(u),
+          playerVars: {
+            'autoplay': 1,
+            'listType': u.includes('list=') ? 'playlist' : null,
+            'list': getParam(u, 'list')
+          },
+          events: {'onReady': syncYT, 'onStateChange': syncYT}
+        });
+      } else if(u !== "") {
+        a.src = u; a.play();
+        document.getElementById('track-title').innerHTML = "Streaming Audio";
+        document.getElementById('track-artist').innerHTML = u.split('/')[2];
+        if(u.includes('streamtheworld') || u.includes('.mp3?')) {
+           l.style.display = 'block';
+           document.getElementById('total-time').innerHTML = "LIVE";
+        }
+      }
+    }
+
+    function syncYT() {
+      timer = setInterval(() => {
+        if(yt && yt.getVideoData) {
+          var d = yt.getVideoData();
+          document.getElementById('track-title').innerHTML = d.title || "Playing...";
+          document.getElementById('track-artist').innerHTML = d.author || "YouTube Music";
+          updateUI(yt.getCurrentTime(), yt.getDuration());
+        }
+      }, 1000);
+    }
+
+    function updateAudio() {
+      var a = document.getElementById('aud-engine');
+      if(a.duration && a.duration !== Infinity) {
+        updateUI(a.currentTime, a.duration);
+      } else {
+        document.getElementById('cur-time').innerHTML = fTime(a.currentTime);
+        document.getElementById('progress-bar').style.width = "100%";
+      }
+    }
+
+    function updateUI(c, d) {
+      if(!d) return;
+      document.getElementById('progress-bar').style.width = (c/d*100) + "%";
+      document.getElementById('cur-time').innerHTML = fTime(c);
+      document.getElementById('total-time').innerHTML = fTime(d);
+    }
+
+    function fTime(s) {
+      var m = Math.floor(s/60), sc = Math.floor(s%60);
+      return m + ":" + (sc < 10 ? '0' : '') + sc;
+    }
+
+    function resetUI() {
+      document.getElementById('progress-bar').style.width = "0%";
+      document.getElementById('cur-time').innerHTML = "0:00";
+      document.getElementById('total-time').innerHTML = "0:00";
+    }
+
+    function getID(u) {
+      var reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      var m = u.match(reg);
+      return (m && m[2].length == 11) ? m[2] : "";
+    }
+
+    function getParam(url, n) {
+      var r = new RegExp("[\\?&]" + n + "=([^&#]*)"), res = r.exec(url);
+      return res === null ? "" : decodeURIComponent(res[1].replace(/\+/g, " "));
+    }
+    </script>
+
+</body>
+</html>
