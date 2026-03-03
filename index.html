@@ -9,10 +9,11 @@
     <script src='https://vjs.zencdn.net'></script>
 
     <style>
-    /* FIX: Tambah box-sizing supaya kotak tak lari */
-    * { box-sizing: border-box; }
     body, html { margin:0; padding:0; height:100%; background:#000; font-family:sans-serif; overflow-x:hidden; color:#fff; }
-    
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #007bff; border-radius: 10px; }
+
     .app-wrapper { display:flex; flex-direction:column; min-height:100vh; position:relative; }
     .uc-nav { flex-shrink:0; display:flex; align-items:center; background:#111; padding:8px 15px; gap:10px; border-bottom:1px solid #222; height:56px; z-index:1000; position:sticky; top:0; }
     .uc-input-container { flex:1; background:#222; border-radius:25px; padding:0 15px; display:flex; align-items:center; border:1px solid #333; gap:10px; height:38px; }
@@ -23,60 +24,53 @@
     .m-btn { background:#1a1a1a; border:1px solid #333; color:#888; padding:8px 16px; border-radius:20px; font-size:11px; cursor:pointer; font-weight:bold; }
     .m-btn.active { background:#007bff; color:#fff; border-color:#007bff; }
 
-    .player-stage { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0 auto; padding: 20px; }
-
-    /* FIX: CSS GRID UNTUK 2 & 4 SCREEN */
-    .player-stage.grid-mode { 
-        display: grid !important; 
-        grid-template-columns: repeat(2, 1fr) !important; 
-        gap: 15px; 
-        max-width: 1200px;
-    }
+    .player-stage { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0 auto; padding: 20px; box-sizing: border-box; }
 
     .video-slot { 
-        position: relative; width: 100%; max-width: 900px; 
+        position: relative; width: 100%; max-width: 900px; margin: 0 auto 20px auto; 
         aspect-ratio: 16/9; background: #000; border: 1px solid #222; 
-        border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+        border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    
-    /* FIX: Bila dalam grid, hilangkan margin bawah */
-    .grid-mode .video-slot { margin-bottom: 0 !important; max-width: 100% !important; }
+
+    .player-stage.grid-mode { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 15px !important; width: 100% !important; max-width: 1200px !important; }
+    .grid-mode .video-slot { margin: 0 !important; width: 100% !important; }
+
 
     iframe { width:100%; height:100%; border:none; }
     .uc-footer { background:#111; padding:20px; text-align:center; font-size:11px; color:#555; border-top:1px solid #222; margin-top: auto; }
 
-    @media (max-width: 850px) { .grid-mode { grid-template-columns: 1fr !important; } }
+    @media (max-width: 850px) { .grid-mode { grid-template-columns: 1fr !important; } .video-slot { border-radius: 0; } }
     </style>
 </head>
 <body>
 
-  <div class='app-wrapper'>
+   <div class='app-wrapper'>
     <div class='uc-nav'>
       <div class='uc-input-container'>
         <input id='videoUrl' placeholder='Paste Link...' type='text'/>
-        <span onclick='document.getElementById("videoUrl").value=""' style='color:#555; cursor:pointer; font-size:20px;'>×</span>
+        <span onclick='document.getElementById(&quot;videoUrl&quot;).value=&quot;&quot;' style='color:#555; cursor:pointer; font-size:20px;'>&#215;</span>
       </div>
-      <button class='btn-action' onclick='prosesLink()'>▶</button>
+      <button class='btn-action' onclick='prosesLink()'>&#9654;</button>
     </div>
 
     <div class='mode-box'>
-        <button class='m-btn active' id='btn1' onclick='switchLayout("single")'>1 SCREEN</button>
-        <button class='m-btn' id='btn2' onclick='switchLayout("dual")'>2 SCREEN</button>
-        <button class='m-btn' id='btn4' onclick='switchLayout("quad")'>4 SCREEN</button>
+        <button class='m-btn active' id='btn1' onclick='switchLayout(&quot;single&quot;)'>1 SCREEN</button>
+        <button class='m-btn' id='btn2' onclick='switchLayout(&quot;dual&quot;)'>2 SCREEN</button>
+        <button class='m-btn' id='btn4' onclick='switchLayout(&quot;quad&quot;)'>4 SCREEN</button>
     </div>
 
     <div class='player-stage' id='mainStage'>
       <div class='video-slot' id='slotA'>
         <div id='vjs-eng' style='display:none; width:100%; height:100%;'>
-          <video class='video-js vjs-big-play-centered' controls id='my-video' playsinline preload='auto'></video>
+          <video class='video-js vjs-big-play-centered' controls='' id='my-video' playsinline='' preload='auto'/>
         </div>
-        <div id='ifrm-A' style='width:100%; height:100%;'></div>
+        <div id='ifrm-A' style='width:100%; height:100%;'/>
       </div>
-      <div class='video-slot' id='slotB' style='display:none;'><div id='ifrm-B' style='width:100%; height:100%;'></div></div>
-      <div class='video-slot' id='slotC' style='display:none;'><div id='ifrm-C' style='width:100%; height:100%;'></div></div>
-      <div class='video-slot' id='slotD' style='display:none;'><div id='ifrm-D' style='width:100%; height:100%;'></div></div>
+      <div class='video-slot' id='slotB' style='display:none;'><div id='ifrm-B' style='width:100%; height:100%;'/></div>
+      <div class='video-slot' id='slotC' style='display:none;'><div id='ifrm-C' style='width:100%; height:100%;'/></div>
+      <div class='video-slot' id='slotD' style='display:none;'><div id='ifrm-D' style='width:100%; height:100%;'/></div>
     </div>
-
+          
     <div class='uc-footer'>© <span id='currentYear'></span> KIRIN VIDEO PLAYER PRO</div>
   </div>
 
@@ -87,23 +81,31 @@
 
     function switchLayout(mode) {
         const stage = document.getElementById('mainStage');
-        slotIndex = 0;
-        stage.classList.remove('grid-mode');
+        slotIndex = 0; // Reset ke skrin pertama setiap kali tukar mod
         
-        // FIX: Reset semua slot ke hidden dulu
-        document.getElementById('slotB').style.display = 'none';
-        document.getElementById('slotC').style.display = 'none';
-        document.getElementById('slotD').style.display = 'none';
+        // 1. Buang class grid dulu
+        stage.classList.remove('grid-mode');
 
-        if(mode !== 'single') {
+        // 2. Logik munculkan kotak mengikut mod
+        if (mode === 'single') {
+            document.getElementById('slotB').style.display = 'none';
+            document.getElementById('slotC').style.display = 'none';
+            document.getElementById('slotD').style.display = 'none';
+        } 
+        else if (mode === 'dual') {
             stage.classList.add('grid-mode');
-            document.getElementById('slotB').style.display = 'block'; // Aktifkan slot 2
-            if(mode === 'quad') {
-                document.getElementById('slotC').style.display = 'block'; // Aktifkan slot 3
-                document.getElementById('slotD').style.display = 'block'; // Aktifkan slot 4
-            }
+            document.getElementById('slotB').style.display = 'block'; // Munculkan kotak 2
+            document.getElementById('slotC').style.display = 'none';
+            document.getElementById('slotD').style.display = 'none';
+        } 
+        else if (mode === 'quad') {
+            stage.classList.add('grid-mode');
+            document.getElementById('slotB').style.display = 'block'; // Munculkan kotak 2
+            document.getElementById('slotC').style.display = 'block'; // Munculkan kotak 3
+            document.getElementById('slotD').style.display = 'block'; // Munculkan kotak 4
         }
 
+        // 3. Tukar warna butang yang aktif
         document.querySelectorAll('.m-btn').forEach(btn => btn.classList.remove('active'));
         if(mode === 'single') document.getElementById('btn1').classList.add('active');
         if(mode === 'dual') document.getElementById('btn2').classList.add('active');
