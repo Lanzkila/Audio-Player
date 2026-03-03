@@ -3,186 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KIRIN MULTI-PLAYER PRO</title>
+    <title>KIRIN PLAYER PRO</title>
 
-    <!-- Video.js CSS -->
-    <link href="https://vjs.zencdn.net" rel="stylesheet" />
-    
+    <link href='https://vjs.zencdn.net' rel='stylesheet'/>
+    <script src='https://vjs.zencdn.net'></script>
+
     <style>
-        * { box-sizing: border-box; }
-        body, html { margin:0; padding:0; height:100%; background:#0b0b0b; font-family:'Segoe UI', Roboto, sans-serif; overflow-x:hidden; color:#fff; }
-        
-        /* Scrollbar Style */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #007bff; border-radius: 10px; }
+    /* FIX: Tambah box-sizing supaya kotak tak lari */
+    * { box-sizing: border-box; }
+    body, html { margin:0; padding:0; height:100%; background:#000; font-family:sans-serif; overflow-x:hidden; color:#fff; }
+    
+    .app-wrapper { display:flex; flex-direction:column; min-height:100vh; position:relative; }
+    .uc-nav { flex-shrink:0; display:flex; align-items:center; background:#111; padding:8px 15px; gap:10px; border-bottom:1px solid #222; height:56px; z-index:1000; position:sticky; top:0; }
+    .uc-input-container { flex:1; background:#222; border-radius:25px; padding:0 15px; display:flex; align-items:center; border:1px solid #333; gap:10px; height:38px; }
+    input#videoUrl { flex:1; background:transparent; border:none; color:#fff; font-size:14px; outline:none; height:100%; }
+    .btn-action { background:#007bff; color:#fff; border:none; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
 
-        .app-wrapper { display:flex; flex-direction:column; min-height:100vh; }
-        
-        /* Navigation */
-        .uc-nav { flex-shrink:0; display:flex; align-items:center; background:#111; padding:10px 20px; gap:15px; border-bottom:1px solid #222; height:65px; position:sticky; top:0; z-index:1000; }
-        .uc-input-container { flex:1; background:#1a1a1a; border-radius:30px; padding:0 18px; display:flex; align-items:center; border:1px solid #333; gap:10px; height:42px; transition: 0.3s; }
-        .uc-input-container:focus-within { border-color: #007bff; box-shadow: 0 0 8px rgba(0,123,255,0.3); }
-        input#videoUrl { flex:1; background:transparent; border:none; color:#fff; font-size:14px; outline:none; }
-        
-        .btn-action { background:#007bff; color:#fff; border:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition: 0.2s; font-size: 18px; }
-        .btn-action:hover { background: #0056b3; transform: scale(1.05); }
+    .mode-box { padding:12px; background:#000; display:flex; justify-content:center; gap:12px; border-bottom: 1px solid #222; }
+    .m-btn { background:#1a1a1a; border:1px solid #333; color:#888; padding:8px 16px; border-radius:20px; font-size:11px; cursor:pointer; font-weight:bold; }
+    .m-btn.active { background:#007bff; color:#fff; border-color:#007bff; }
 
-        /* Mode Selector */
-        .mode-box { padding:15px; background:#0e0e0e; display:flex; justify-content:center; gap:15px; border-bottom: 1px solid #222; }
-        .m-btn { background:#1a1a1a; border:1px solid #333; color:#aaa; padding:10px 22px; border-radius:25px; font-size:12px; cursor:pointer; font-weight:bold; transition: 0.3s; }
-        .m-btn:hover { border-color: #555; color: #fff; }
-        .m-btn.active { background:#007bff; color:#fff; border-color:#007bff; box-shadow: 0 0 15px rgba(0,123,255,0.4); }
+    .player-stage { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0 auto; padding: 20px; }
 
-        /* Player Stage & GRID FIX */
-        .player-stage { width: 100%; max-width: 1400px; margin: 0 auto; padding: 20px; display: block; }
-        
-        /* Apabila class .grid-active ditambah */
-        .player-stage.grid-active { 
-            display: grid !important; 
-            grid-template-columns: repeat(2, 1fr) !important; 
-            gap: 15px !important; 
-        }
+    /* FIX: CSS GRID UNTUK 2 & 4 SCREEN */
+    .player-stage.grid-mode { 
+        display: grid !important; 
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 15px; 
+        max-width: 1200px;
+    }
 
-        .video-slot { 
-            position: relative; width: 100%; aspect-ratio: 16/9; background: #000; 
-            border: 1px solid #222; border-radius: 12px; overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px;
-        }
-        .grid-active .video-slot { margin-bottom: 0; }
+    .video-slot { 
+        position: relative; width: 100%; max-width: 900px; 
+        aspect-ratio: 16/9; background: #000; border: 1px solid #222; 
+        border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+    }
+    
+    /* FIX: Bila dalam grid, hilangkan margin bawah */
+    .grid-mode .video-slot { margin-bottom: 0 !important; max-width: 100% !important; }
 
-        iframe { width:100%; height:100%; border:none; }
-        .uc-footer { background:#111; padding:20px; text-align:center; font-size:12px; color:#555; border-top:1px solid #222; margin-top: auto; }
+    iframe { width:100%; height:100%; border:none; }
+    .uc-footer { background:#111; padding:20px; text-align:center; font-size:11px; color:#555; border-top:1px solid #222; margin-top: auto; }
 
-        @media (max-width: 850px) { 
-            .player-stage.grid-active { grid-template-columns: 1fr !important; } 
-            .video-slot { border-radius: 0; }
-        }
+    @media (max-width: 850px) { .grid-mode { grid-template-columns: 1fr !important; } }
     </style>
 </head>
 <body>
 
-  <div class="app-wrapper">
-    <div class="uc-nav">
-      <div class="uc-input-container">
-        <input id="videoUrl" placeholder="Paste YouTube, Twitch, Kick or MP4 link..." type="text"/>
-        <span onclick="document.getElementById('videoUrl').value=''" style="color:#666; cursor:pointer; font-size:24px;">&times;</span>
+  <div class='app-wrapper'>
+    <div class='uc-nav'>
+      <div class='uc-input-container'>
+        <input id='videoUrl' placeholder='Paste Link...' type='text'/>
+        <span onclick='document.getElementById("videoUrl").value=""' style='color:#555; cursor:pointer; font-size:20px;'>×</span>
       </div>
-      <button class="btn-action" onclick="prosesLink()">▶</button>
+      <button class='btn-action' onclick='prosesLink()'>▶</button>
     </div>
 
-    <div class="mode-box">
-        <button class="m-btn active" id="btn1" onclick="switchLayout('single')">1 SCREEN</button>
-        <button class="m-btn" id="btn2" onclick="switchLayout('dual')">2 SCREEN</button>
-        <button class="m-btn" id="btn4" onclick="switchLayout('quad')">4 SCREEN</button>
+    <div class='mode-box'>
+        <button class='m-btn active' id='btn1' onclick='switchLayout("single")'>1 SCREEN</button>
+        <button class='m-btn' id='btn2' onclick='switchLayout("dual")'>2 SCREEN</button>
+        <button class='m-btn' id='btn4' onclick='switchLayout("quad")'>4 SCREEN</button>
     </div>
 
-    <div class="player-stage" id="mainStage">
-      <!-- Slot A (Satu-satunya skrin yang ada Video.js) -->
-      <div class="video-slot" id="slotA">
-        <div id="vjs-eng" style="display:none; width:100%; height:100%;">
-          <video id="my-video" class="video-js vjs-big-play-centered" controls playsinline preload="auto"></video>
+    <div class='player-stage' id='mainStage'>
+      <div class='video-slot' id='slotA'>
+        <div id='vjs-eng' style='display:none; width:100%; height:100%;'>
+          <video class='video-js vjs-big-play-centered' controls id='my-video' playsinline preload='auto'></video>
         </div>
-        <div id="ifrm-A" style="width:100%; height:100%;"></div>
+        <div id='ifrm-A' style='width:100%; height:100%;'></div>
       </div>
-
-      <!-- Slot Tambahan -->
-      <div class="video-slot" id="slotB" style="display:none;"><div id="ifrm-B" style="height:100%;"></div></div>
-      <div class="video-slot" id="slotC" style="display:none;"><div id="ifrm-C" style="height:100%;"></div></div>
-      <div class="video-slot" id="slotD" style="display:none;"><div id="ifrm-D" style="height:100%;"></div></div>
+      <div class='video-slot' id='slotB' style='display:none;'><div id='ifrm-B' style='width:100%; height:100%;'></div></div>
+      <div class='video-slot' id='slotC' style='display:none;'><div id='ifrm-C' style='width:100%; height:100%;'></div></div>
+      <div class='video-slot' id='slotD' style='display:none;'><div id='ifrm-D' style='width:100%; height:100%;'></div></div>
     </div>
 
-    <div class="uc-footer">
-      &copy; <span id="currentYear"></span> KIRIN MULTI-PLAYER PRO | Mode: <span id="modeStatus">1 Screen</span>
-    </div>
+    <div class='uc-footer'>© <span id='currentYear'></span> KIRIN VIDEO PLAYER PRO</div>
   </div>
-
-    <!-- Video.js Script -->
-    <script src="https://vjs.zencdn.net"></script>
 
     <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
-    var player = videojs('my-video', { fluid: true });
+    var player = videojs('my-video', { fill: true });
     let slotIndex = 0;
-
-    // Enter Key Support
-    document.getElementById('videoUrl').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') prosesLink();
-    });
 
     function switchLayout(mode) {
         const stage = document.getElementById('mainStage');
-        const status = document.getElementById('modeStatus');
-        slotIndex = 0; 
+        slotIndex = 0;
+        stage.classList.remove('grid-mode');
         
-        // Reset all
-        stage.classList.remove('grid-active');
+        // FIX: Reset semua slot ke hidden dulu
         document.getElementById('slotB').style.display = 'none';
         document.getElementById('slotC').style.display = 'none';
         document.getElementById('slotD').style.display = 'none';
 
-        if (mode === 'single') {
-            status.innerText = "1 Screen";
-        } else if (mode === 'dual') {
-            stage.classList.add('grid-active');
-            document.getElementById('slotB').style.display = 'block';
-            status.innerText = "2 Screens";
-        } else if (mode === 'quad') {
-            stage.classList.add('grid-active');
-            document.getElementById('slotB').style.display = 'block';
-            document.getElementById('slotC').style.display = 'block';
-            document.getElementById('slotD').style.display = 'block';
-            status.innerText = "4 Screens";
+        if(mode !== 'single') {
+            stage.classList.add('grid-mode');
+            document.getElementById('slotB').style.display = 'block'; // Aktifkan slot 2
+            if(mode === 'quad') {
+                document.getElementById('slotC').style.display = 'block'; // Aktifkan slot 3
+                document.getElementById('slotD').style.display = 'block'; // Aktifkan slot 4
+            }
         }
 
         document.querySelectorAll('.m-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('btn' + (mode === 'single' ? '1' : (mode === 'dual' ? '2' : '4'))).classList.add('active');
+        if(mode === 'single') document.getElementById('btn1').classList.add('active');
+        if(mode === 'dual') document.getElementById('btn2').classList.add('active');
+        if(mode === 'quad') document.getElementById('btn4').classList.add('active');
     }
 
     function getHTML(link) {
-        const domain = window.location.hostname || "localhost";
-        
+        var domain = window.location.hostname || "localhost"; 
         if (link.includes("youtube.com") || link.includes("youtu.be")) {
-            const ytId = link.includes("v=") ? link.split("v=")[1].split("&")[0] : link.split("/").pop().split("?")[0];
-            return `<iframe src="https://www.youtube.com{ytId}?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-        }
+            var ytId = link.includes("v=") ? link.split('v=')[1].split('&')[0] : link.split("/").pop().split("?")[0];
+            return '<iframe src="https://www.youtube.com" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+        } 
         if (link.includes("twitch.tv")) {
-            const twId = link.split("/").pop().split("?")[0];
-            return `<iframe src="https://player.twitch.tv{twId}&parent=${domain}&autoplay=true" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+            let twId = link.split("/").pop().split("?")[0];
+            return '<iframe src="https://player.twitch.tv' + twId + '&parent=' + domain + '&autoplay=true" allow="autoplay; fullscreen" allowfullscreen></iframe>';
         }
-        if (link.includes("kick.com")) {
-            const kickId = link.split("/").pop().split("?")[0];
-            return `<iframe src="https://player.kick.com{kickId}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-        }
-        return `<iframe src="${link}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        return '<iframe src="' + link + '" allow="autoplay; fullscreen" allowfullscreen></iframe>';
     }
 
     function prosesLink() {
-        const url = document.getElementById('videoUrl').value.trim();
+        var url = document.getElementById('videoUrl').value.trim();
         if(!url) return;
-
         const targets = ['ifrm-A', 'ifrm-B', 'ifrm-C', 'ifrm-D'];
+        
+        // FIX: Kira maxSlots yang aktif masa itu
         let maxSlots = 1;
         if(document.getElementById('slotD').style.display === 'block') maxSlots = 4;
         else if(document.getElementById('slotB').style.display === 'block') maxSlots = 2;
 
-        if (slotIndex === 0 && (url.toLowerCase().endsWith(".mp4") || url.includes(".m3u8"))) {
+        if(slotIndex === 0 && url.includes(".mp4")) {
             document.getElementById('ifrm-A').style.display = 'none';
             document.getElementById('vjs-eng').style.display = 'block';
-            player.src({ src: url, type: url.includes(".m3u8") ? 'application/x-mpegURL' : 'video/mp4' });
+            player.src({ src: url, type: 'video/mp4' });
             player.play();
         } else {
-            if (slotIndex === 0) {
-                document.getElementById('vjs-eng').style.display = 'none';
-                player.pause();
-                document.getElementById('ifrm-A').style.display = 'block';
-            }
+            if(slotIndex === 0) { document.getElementById('vjs-eng').style.display = 'none'; player.pause(); document.getElementById('ifrm-A').style.display = 'block'; }
             document.getElementById(targets[slotIndex]).innerHTML = getHTML(url);
         }
-
+        
         slotIndex = (slotIndex + 1) % maxSlots;
         document.getElementById('videoUrl').value = '';
-        document.getElementById('videoUrl').focus();
     }
     </script>
 </body>
