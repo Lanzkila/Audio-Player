@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nama Converter Anda</title>
+
+    <link href='https://vjs.zencdn.net/8.10.0/video-js.css' rel='stylesheet'/>
+    <script src='https://vjs.zencdn.net/8.10.0/video.min.js'/></script>
+
+    <style>
+    body, html { margin:0; padding:0; height:100%; background:#000; font-family:sans-serif; overflow-x:hidden; }
+    .app-wrapper { display:flex; flex-direction:column; min-height:100vh; position:relative; }
+    
+    /* Navbar Original UI */
+    .uc-nav {
+        flex-shrink:0; display:flex; align-items:center; background:#161617;
+        padding:8px 12px; gap:8px; border-bottom:1px solid #333; height:56px; z-index:1000; position:sticky; top:0;
+    }
+    .uc-input-container { flex:1; background:rgba(42,42,43,0.5); border-radius:20px; padding:0 12px; display:flex; align-items:center; border:1px solid rgba(255,255,255,0.1); gap:8px; height:34px; }
+    input#videoUrl { flex:1; background:transparent; border:none; color:#fff; font-size:13px; outline:none; height:100%; }
+    .btn-action { background:#007bff; color:#fff; border:none; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+
+    /* New: Mode Switcher Style */
+    .mode-box { padding:10px; background:#000; display:flex; justify-content:center; gap:10px; }
+    .m-btn { background:#222; border:none; color:#777; padding:6px 12px; border-radius:15px; font-size:10px; cursor:pointer; }
+    .m-btn.active { background:#007bff; color:#fff; }
+
+    /* Stage Layout */
+    .player-stage { display:flex; flex-direction:column; width:100%; }
+    .video-slot { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-bottom:1px solid #222; }
+    .split-mode { display:grid !important; grid-template-columns:1fr 1fr; }
+    @media (max-width: 768px) { .split-mode { grid-template-columns:1fr; } }
+
+    /* Floating Logic */
+    .is-floating { position:fixed !important; bottom:20px; right:20px; width:260px !important; height:146px !important; z-index:9999; border:2px solid #007bff; border-radius:8px; box-shadow:0 10px 30px #000; }
+    .close-f { display:none; position:absolute; top:-10px; left:-10px; background:red; border-radius:50%; width:20px; height:20px; font-size:12px; color:#fff; cursor:pointer; z-index:10001; align-items:center; justify-content:center; }
+    .is-floating .close-f { display:flex; }
+
+    #vjs-eng, #ifrm-eng { width:100%; height:100%; display:none; }
+    iframe { width:100%; height:100%; border:none; }
+    .video-js { width:100% !important; height:100% !important; }
+
+    .uc-footer { background:#161617; padding:15px; text-align:center; font-size:10px; color:#444; border-top:1px solid #222; }
+
+/* Logik Hilangkan Menu */
+    .mode-box { 
+      overflow: hidden; 
+      transition: all 0.4s ease-in-out; 
+      max-height: 100px; 
+      opacity: 1; 
+      border-bottom: 1px solid #222;
+    }
+    
+    /* Bila masuk mode watching, menu akan mengecut & ghaib */
+    body.watching-mode .mode-box { 
+      max-height: 0; 
+      opacity: 0; 
+      padding: 0; 
+      border: none; 
+      pointer-events: none; 
+    }
+
+    /* Tambahan sikit biar player nampak lebih rapat ke atas bila menu hilang */
+    body.watching-mode .player-stage { margin-top: 0; }
+
+/* Container Utama Stage */
+.player-stage { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; /* Bagi player duduk tengah */
+    width: 100%; 
+    transition: all 0.4s ease;
+}
+
+/* Slot Video untuk Single Mode */
+.video-slot { 
+    position: relative; 
+    width: 100%; 
+    max-width: 900px; /* Boss boleh ubah saiz ni (cth: 800px atau 1000px) */
+    margin: 20px auto; /* Jarak atas bawah & duduk tengah */
+    aspect-ratio: 16/9; 
+    background: #000; 
+    border: 1px solid #222; 
+    border-radius: 8px; /* Biar nampak kemas sikit ada curve */
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+/* BILA MASUK SPLIT MODE: Kita paksa dia jadi lebar balik */
+.split-mode .video-slot { 
+    max-width: 100% !important; 
+    margin: 0 !important; 
+    border-radius: 0; /* Split mode selalunya cantik petak rapat */
+}
+
+/* Untuk HP: Biar dia 100% lebar skrin balik sbb skrin HP kecil */
+@media (max-width: 768px) {
+    .video-slot { 
+        max-width: 100%; 
+        margin: 10px 0;
+        border-radius: 0;
+    }
+}
+    </style>
+</head>
+<body>
+
+  <div class='app-wrapper'>
+    <div class='uc-nav' id='mainNav'>
+      <div class='uc-input-container'>
+        <input id='videoUrl' placeholder='Paste Link...' type='text'/>
+        <span class='btn-x' onclick='document.getElementById(&quot;videoUrl&quot;).value=&quot;&quot;' style='color:#999;cursor:pointer;'>&#215;</span>
+      </div>
+      <button class='btn-action' onclick='prosesLink()'>&#9654;</button>
+    </div>
+
+    <div class='mode-box'>
+        <button class='m-btn active' id='s-btn' onclick='switchLayout(&quot;single&quot;)'>SINGLE SCREEN</button>
+        <button class='m-btn' id='m-btn' onclick='switchLayout(&quot;multi&quot;)'>SPLIT SCREEN</button>
+    </div>
+
+    <div class='player-stage' id='mainStage'>
+      <div class='video-slot' id='slotA' onclick='toggleNav()'>
+        <div class='close-f' onclick='resetFloat()'>&#215;</div>
+        <div id='vjs-eng'>
+          <video class='video-js vjs-big-play-centered' controls='' id='my-video' playsinline='' preload='auto'/>
+        </div>
+        <div id='ifrm-eng'>
+          <div id='ifrm-content' style='width:100%; height:100%;'/>
+        </div>
+      </div>
+
+      <div class='video-slot' id='slotB' style='display:none;'>
+        <div id='ifrm-content-b' style='width:100%; height:100%;'/>
+      </div>
+    </div>
+
+    <div class='uc-footer'>
+      &#169; <span id='currentYear'/> KIRIN PLAYER PRO
+    </div>
+  </div>
+
+    <script>
+// 1. Inisialisasi Player & Variabel Global
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    var player = videojs('my-video', { 
+        fill: true, 
+        html5: { vhs: { overrideNative: true } } 
+    });
+    let isFloating = false;
+
+    // 2. Keyboard Listeners (Enter & Space)
+    document.getElementById('videoUrl').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            prosesLink();
+        }
+    });
+
+    window.addEventListener('keydown', function(e) {
+        // Space untuk Play/Pause (Hanya jika tidak tengah menaip di input)
+        if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT') {
+            e.preventDefault();
+            if (player.paused()) { 
+                player.play(); 
+            } else { 
+                player.pause(); 
+            }
+        }
+    });
+
+    // Munculkan semula menu jika kotak input di-klik (Focus)
+    document.getElementById('videoUrl').addEventListener('focus', function() {
+        document.body.classList.remove('watching-mode');
+    });
+
+    // 3. Logik Toggle Nav (Untuk HP)
+    function toggleNav() {
+        var nav = document.getElementById('mainNav');
+        if (window.innerWidth <= 768) {
+            nav.style.opacity = (nav.style.opacity === '0') ? '1' : '0';
+        }
+    }
+
+    // 4. Logik Tukar Layout (Single / Split)
+    function switchLayout(mode) {
+        const stage = document.getElementById('mainStage');
+        const slotB = document.getElementById('slotB');
+        const btnS = document.getElementById('s-btn');
+        const btnM = document.getElementById('m-btn');
+
+        if(mode === 'multi') {
+            stage.classList.add('split-mode');
+            slotB.style.display = 'block';
+            btnM.classList.add('active');
+            btnS.classList.remove('active');
+        } else {
+            stage.classList.remove('split-mode');
+            slotB.style.display = 'none';
+            btnS.classList.add('active');
+            btnM.classList.remove('active');
+            // Reset Player B jika balik ke Single
+            document.getElementById('ifrm-content-b').innerHTML = '';
+        }
+    }
+
+    // 5. Engine Utama: Proses Link (Universal Scraper)
+    function prosesLink() {
+        var url = document.getElementById('videoUrl').value.trim();
+        if(!url) return;
+
+        // AKTIFKAN LOGIK HILANG MENU
+        document.body.classList.add('watching-mode');
+
+        var vEng = document.getElementById('vjs-eng');
+        var iEng = document.getElementById('ifrm-eng');
+        var targetA = document.getElementById('ifrm-content');
+        var targetB = document.getElementById('ifrm-content-b');
+        
+        // Logik penentuan: Hantar ke Player B jika Split Mode AKTIF & Player A sudah "berisi"
+        var isB = (document.getElementById('mainStage').classList.contains('split-mode') && (vEng.style.display === 'block' || targetA.innerHTML.length > 20));
+
+        // Penapis URL (YouTube, etc)
+        function getHTML(link) {
+            if (link.includes("youtube.com") || link.includes("youtu.be")) {
+                var ytId = link.includes("v=") ? link.split('v=')[1].split('&')[0] : link.split("/").pop();
+                return '<iframe src="https://www.youtube.com/embed/'+ytId+'?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+            } 
+            // Support untuk FB, TikTok, GDrive, m3u8 link tv, dsb secara universal via iframe
+            return '<iframe src="' + link + '" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+        }
+
+        if(!isB) {
+            // --- PROSES PLAYER A ---
+            vEng.style.display = 'none'; 
+            iEng.style.display = 'none';
+            player.pause();
+
+            // Logik Direct File .mp4 (Engine VideoJS)
+            if (url.includes(".mp4") && !url.includes("drive.google")) {
+                vEng.style.display = 'block';
+                player.src({ src: url, type: 'video/mp4' });
+                player.play();
+            } 
+            // Logik Iframe/Universal (Engine Iframe)
+            else {
+                iEng.style.display = 'block';
+                targetA.innerHTML = getHTML(url);
+            }
+        } else {
+            // --- PROSES PLAYER B ---
+            targetB.innerHTML = getHTML(url);
+        }
+
+        // Kosongkan kotak input selepas berjaya load
+        document.getElementById('videoUrl').value = '';
+    }
+
+    // 6. Logik Floating Player (Scroll)
+    window.onscroll = function() {
+        var sA = document.getElementById('slotA');
+        // Floating aktif bila scroll melepasi 450px
+        if (window.pageYOffset > 450 && !isFloating) {
+            sA.classList.add('is-floating'); 
+            isFloating = true;
+        } else if (window.pageYOffset <= 450 && isFloating) {
+            sA.classList.remove('is-floating'); 
+            isFloating = false;
+        }
+    };
+
+    function resetFloat() {
+        document.getElementById('slotA').classList.remove('is-floating');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    </script>
+
+</body>
+</html>
