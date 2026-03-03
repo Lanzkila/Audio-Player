@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nama Converter Anda</title>
 
-  <script src='https://www.youtube.com/iframe_api'/></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
 
     <style>
 body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
@@ -109,6 +109,12 @@ input { background: transparent; border: none; color: #fff; width: 80%; outline:
            document.getElementById('total-time').innerHTML = "LIVE";
         }
       }
+    }
+
+function playKirin() {
+    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+        alert("YouTube API belum dimuatkan. Sila tunggu sebentar.");
+        return;
     }
 
     function syncYT() {
