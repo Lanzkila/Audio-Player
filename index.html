@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nama Converter Anda</title>
-
-  <script src="https://www.youtube.com/iframe_api"></script>
-
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
-body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+    body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
 #main-container { width: 90%; max-width: 420px; background: #111; padding: 25px; border-radius: 40px; border: 2px solid #0ff; box-shadow: 0 0 25px rgba(0,255,255,0.2); text-align: center; position: relative; }
 
 /* Display & Screen */
@@ -37,98 +35,83 @@ input { background: transparent; border: none; color: #fff; width: 80%; outline:
     </style>
 </head>
 <body>
-    
-   <div id='main-container'>
-    <div class='display-screen'>
-      <div id='player-yt'/>
-      <div id='radio-visual'>
-        <div class='v-ring'/>
-        <span id='live-tag' style='color:#0ff; font-size:10px; margin-top:15px; letter-spacing:2px; display:none;'>LIVE STREAMING</span>
-      </div>
-    </div>
-    
-    <div id='meta-shelf'>
-      <span id='track-title'>Ready...</span>
-      <span id='track-artist'>YouTube / MP3 / Radio</span>
-      <div class='progress-container'><div id='progress-bar'/></div>
-      <div class='time-info'>
-        <span id='cur-time'>0:00</span>
-        <span id='total-time'>0:00</span>
-      </div>
-    </div>
-    
-    <div class='input-group'>
-      <input id='url-in' onkeydown='if(event.keyCode==13) playKirin()' placeholder='Paste Link &amp; Enter...' type='text'/>
-      <button class='btn-play' onclick='playKirin()'>&#9654;</button>
-    </div>
+    <div id='main-container'>
+        <div class='display-screen'>
+            <div id='player-yt'></div>
+            <div id='radio-visual'>
+                <div class='v-ring'></div>
+                <span id='live-tag' style='color:#0ff; font-size:10px; margin-top:15px; letter-spacing:2px; display:none;'>LIVE STREAMING</span>
+            </div>
+        </div>
+        
+        <div id='meta-shelf'>
+            <span id='track-title'>Ready...</span>
+            <span id='track-artist'>YouTube / MP3 / Radio</span>
+            <div class='progress-container'><div id='progress-bar'></div></div>
+            <div class='time-info'>
+                <span id='cur-time'>0:00</span>
+                <span id='total-time'>0:00</span>
+            </div>
+        </div>
+        
+        <div class='input-group'>
+            <input id='url-in' onkeydown='if(event.keyCode==13) playKirin()' placeholder='Paste Link & Enter...' type='text'/>
+            <button class='btn-play' onclick='playKirin()'>&#9654;</button>
+        </div>
 
-    <div class='player-footer'>
-      &amp;copy; <span id='year-display'/> KIRIN AUDIO INTEL</span>
+        <div class='player-footer'>
+            &copy; <span id='year-display'></span> KIRIN AUDIO INTEL
+        </div>
+        <audio id='aud-engine' ontimeupdate='updateAudio()'></audio>
     </div>
-
-    <audio id='aud-engine' ontimeupdate='updateAudio()'/>
-  </div>
 
     <script>
-    var yt, timer;
+        var yt, timer;
+        document.getElementById('year-display').innerHTML = new Date().getFullYear();
 
-    // Set Tahun Automatik
-    document.getElementById('year-display').innerHTML = new Date().getFullYear();
-
-    function playKirin() {
-      var u = document.getElementById('url-in').value;
-      var a = document.getElementById('aud-engine');
-      var r = document.getElementById('radio-visual');
-      var y = document.getElementById('player-yt');
-      var l = document.getElementById('live-tag');
-
-      if(yt && yt.destroy) yt.destroy();
-      clearInterval(timer);
-      a.pause(); a.src = "";
-      y.style.display = 'none'; r.style.display = 'flex'; l.style.display = 'none';
-      resetUI();
-
-      if(u.includes('youtube') || u.includes('youtu.be')) {
-        y.style.display = 'block'; r.style.display = 'none';
-        yt = new YT.Player('player-yt', {
-          height: '100%', width: '100%',
-          videoId: getID(u),
-          playerVars: {
-            'autoplay': 1,
-            'listType': u.includes('list=') ? 'playlist' : null,
-            'list': getParam(u, 'list')
-          },
-          events: {'onReady': syncYT, 'onStateChange': syncYT}
-        });
-      } else if(u !== "") {
-        a.src = u; a.play();
-        document.getElementById('track-title').innerHTML = "Streaming Audio";
-        document.getElementById('track-artist').innerHTML = u.split('/')[2];
-        if(u.includes('streamtheworld') || u.includes('.mp3?')) {
-           l.style.display = 'block';
-           document.getElementById('total-time').innerHTML = "LIVE";
+        // Fungsi wajib untuk API YouTube
+        function onYouTubeIframeAPIReady() {
+            console.log("YouTube API sedia");
         }
-      }
-    }
 
-function playKirin() {
-    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
-        alert("YouTube API belum dimuatkan. Sila tunggu sebentar.");
-        return;
-    }
+        function playKirin() {
+            var u = document.getElementById('url-in').value;
+            var a = document.getElementById('aud-engine');
+            var r = document.getElementById('radio-visual');
+            var y = document.getElementById('player-yt');
+            var l = document.getElementById('live-tag');
 
-    function syncYT() {
-      timer = setInterval(() => {
-        if(yt && yt.getVideoData) {
-          var d = yt.getVideoData();
-          document.getElementById('track-title').innerHTML = d.title || "Playing...";
-          document.getElementById('track-artist').innerHTML = d.author || "YouTube Music";
-          updateUI(yt.getCurrentTime(), yt.getDuration());
+            if(yt && yt.destroy) yt.destroy();
+            clearInterval(timer);
+            a.pause(); a.src = "";
+            y.style.display = 'none'; r.style.display = 'flex'; l.style.display = 'none';
+            resetUI();
+
+            if(u.includes('youtube') || u.includes('youtu.be')) {
+                y.style.display = 'block'; r.style.display = 'none';
+                yt = new YT.Player('player-yt', {
+                    height: '100%', width: '100%',
+                    videoId: getID(u),
+                    playerVars: { 'autoplay': 1 },
+                    events: {'onReady': syncYT, 'onStateChange': syncYT}
+                });
+            } else if(u !== "") {
+                a.src = u; a.play();
+                document.getElementById('track-title').innerHTML = "Streaming Audio";
+            }
         }
-      }, 1000);
-    }
 
-    function updateAudio() {
+        function syncYT() {
+            timer = setInterval(() => {
+                if(yt && yt.getVideoData) {
+                    var d = yt.getVideoData();
+                    document.getElementById('track-title').innerHTML = d.title || "Playing...";
+                    updateUI(yt.getCurrentTime(), yt.getDuration());
+                }
+            }, 1000);
+        }
+
+      function updateAudio() {
       var a = document.getElementById('aud-engine');
       if(a.duration && a.duration !== Infinity) {
         updateUI(a.currentTime, a.duration);
@@ -138,35 +121,29 @@ function playKirin() {
       }
     }
 
-    function updateUI(c, d) {
-      if(!d) return;
-      document.getElementById('progress-bar').style.width = (c/d*100) + "%";
-      document.getElementById('cur-time').innerHTML = fTime(c);
-      document.getElementById('total-time').innerHTML = fTime(d);
-    }
+        function updateUI(c, d) {
+            if(!d) return;
+            document.getElementById('progress-bar').style.width = (c/d*100) + "%";
+            document.getElementById('cur-time').innerHTML = fTime(c);
+            document.getElementById('total-time').innerHTML = fTime(d);
+        }
 
-    function fTime(s) {
-      var m = Math.floor(s/60), sc = Math.floor(s%60);
-      return m + ":" + (sc < 10 ? '0' : '') + sc;
-    }
+        function fTime(s) {
+            var m = Math.floor(s/60), sc = Math.floor(s%60);
+            return m + ":" + (sc < 10 ? '0' : '') + sc;
+        }
 
-    function resetUI() {
-      document.getElementById('progress-bar').style.width = "0%";
-      document.getElementById('cur-time').innerHTML = "0:00";
-      document.getElementById('total-time').innerHTML = "0:00";
-    }
+        function resetUI() {
+            document.getElementById('progress-bar').style.width = "0%";
+            document.getElementById('cur-time').innerHTML = "0:00";
+            document.getElementById('total-time').innerHTML = "0:00";
+        }
 
-    function getID(u) {
-      var reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      var m = u.match(reg);
-      return (m && m[2].length == 11) ? m[2] : "";
-    }
-
-    function getParam(url, n) {
-      var r = new RegExp("[\\?&]" + n + "=([^&#]*)"), res = r.exec(url);
-      return res === null ? "" : decodeURIComponent(res[1].replace(/\+/g, " "));
-    }
+        function getID(u) {
+            var reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            var m = u.match(reg);
+            return (m && m[2].length == 11) ? m[2] : "";
+        }
     </script>
-
 </body>
 </html>
