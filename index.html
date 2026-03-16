@@ -132,6 +132,12 @@
             if (e.key === 'Enter') playKirin();
         });
 
+        function onYouTubeIframeAPIReady() {
+            console.log("YouTube API sedia");
+              }
+           }
+        }
+
         function playKirin() {
             var u = document.getElementById('url-in').value.trim();
             if(!u) return;
