@@ -1,6 +1,6 @@
 List :
 
->Japan<
+// Japanese Radio
 https://15113.live.streamtheworld.com/SAM10AAC139.mp3 - JPop Project Radio
 https://26343.live.streamtheworld.com/SAM05AAC121.mp3 - J-Idol Project Radio
 https://stream.zeno.fm/aq6mkfyaxa0uv - Nira FM
@@ -10,8 +10,12 @@ https://stream.zeno.fm/z7s4pbe9o47uv - Love Live Radio FM
 https://radio.wapchan.org/listen/wapfm/radio.mp3 - Wapchan
 https://listen.moe/fallback - Listen Moe
 https://stream.gensokyoradio.net/GensokyoRadio-enhanced.m3u - Gensokyo Radio
+https://kathy.torontocast.com:2600/stream / Love Live Project Radio
+https://stream.zeno.fm/fvqayaa0k2zuv / Baby Metal Radio
+https://stream.zeno.fm/paxe8r07y98uv / AKB48 Lover
+https://stream.loveliveradio.ca/hls/live.m3u8 / Love Live Radio
 
->Malaysia<
+// Malaysia Radio
 https://n13.rcs.revma.com/crec9cmbv4uvv/13_mnpz5j93p00502/playlist.m3u8 - Era FM
 https://n16.rcs.revma.com/cn0zcqsbv4uvv/16_19g97e54jsito02/playlist.m3u8 / THR Gegar FM
 https://n08.rcs.revma.com/7ww2a4tbv4uvv/8_15zxj9ez6zcgz02/playlist.m3u8 / Zayan FM
@@ -26,18 +30,94 @@ https://28103.live.streamtheworld.com/SABAH_FMAAC.aac / Sabah FM
 https://22273.live.streamtheworld.com/SANDAKAN_FMAAC.aac / Sandakan FM
 https://22253.live.streamtheworld.com/NASIONAL_FMAAC.aac / Nasional FM
 https://n14.rcs.revma.com/4p3nqmmbv4uvv/14_1fkskbn3hvzq202/main/177835203.aac / Era Sabah FM
+https://28163.live.streamtheworld.com/ASYIK_FMAAC.aac / Asyik FM
+https://28163.live.streamtheworld.com/RADIO_KLASIKAAC.aac /Radio Klasik
+https://28103.live.streamtheworld.com/KL_FMAAC.aac / KL FM
+https://28093.live.streamtheworld.com/MUTIARA_FMAAC.aac / Mutiara FM
+https://28153.live.streamtheworld.com/PERLIS_FMAAC.aac / Perlis FM
+https://28163.live.streamtheworld.com/KEDAH_FMAAC.aac / Kedah FM
+https://28103.live.streamtheworld.com/PERAK_FMAAC.aac / Perak FM
+https://22273.live.streamtheworld.com/SELANGOR_FMAAC.aac / Selangor FM
+https://22283.live.streamtheworld.com/NEGERI_FMAAC.aac / Negeri FM
+https://28163.live.streamtheworld.com/JOHOR_FMAAC.aac / Johor FM
+https://22283.live.streamtheworld.com/MELAKA_FMAAC.aac / Melaka FM
+https://22283.live.streamtheworld.com/TERENGGANU_FMAAC.aac / Terengganu FM
+https://29312.live.streamtheworld.com/KELANTAN_FMAAC.aac / Kelantan FM
+https://22283.live.streamtheworld.com/PAHANG_FMAAC.aac / Pahang FM
+https://28163.live.streamtheworld.com/SARAWAK_FMAAC.aac / Sarawak FM
+https://22273.live.streamtheworld.com/LANGKAWI_FMAAC.aac /Langkawi FM
+https://22273.live.streamtheworld.com/SABAH_VFMAAC.aac / Sabah V FM
+https://22253.live.streamtheworld.com/KENINGAU_FMAAC.aac / Keningau FM
+https://28163.live.streamtheworld.com/TAWAU_FMAAC.aac / Tawau FM
+https://22283.live.streamtheworld.com/LABUAN_FMAAC.aac / Labuan FM
+https://28153.live.streamtheworld.com/WAI_FM_IBANAAC.aac / Wai Iban FM
+https://22273.live.streamtheworld.com/WAI_FM_BKAAC.aac / Wai Bidayuh FM
+https://28163.live.streamtheworld.com/RED_FMAAC.aac / Red FM
+https://22253.live.streamtheworld.com/MIRI_FMAAC.aac / Miri FM
+https://28163.live.streamtheworld.com/SIBU_FMAAC.aac / Sibu FM
+https://28163.live.streamtheworld.com/SRIAMAN_FMAAC.aac / Sri Aman FM
+https://22253.live.streamtheworld.com/BINTULU_FMAAC.aac / Bintulu FM
+https://22243.live.streamtheworld.com/AI_FMAAC.aac / AI FM
+https://n05.rcs.revma.com/bkqfqkrbv4uvv/5_1fcxioihnvxhn02/playlist.m3u8 / Era Sarawak
+https://n16.rcs.revma.com/hc3unrtbv4uvv/16_efyjinyi3n1t02/playlist.m3u8 / MY Fm
+https://n08.rcs.revma.com/2u1n6dtbv4uvv/8_1kkjflyrln65y02/playlist.m3u8 / Melody FM
+https://n13.rcs.revma.com/xt9nhzsbv4uvv/13_1bf2k9v29xmz002/playlist.m3u8 / Go Xuan FM
+https://d37ey7ubht2hh2.cloudfront.net/out/v1/2d4a3d04aa404f3f8860da4a3ae25817/index_1.m3u8 / Berita Awani
+https://n03.rcs.revma.com/qyg9zmvbv4uvv/3_4mrjfw6mqcy302/playlist.m3u8 / Kenyalang FM
+https://stream.rcs.revma.com/axht8yawe1bwv / Kupi Kupi FM
+https://22283.live.streamtheworld.com/SURIA_FMAAC.aac / Suria FM
+https://n18.rcs.revma.com/q17aka9mtd3vv/18_1oy2dknsh3j3302/playlist.m3u8 / Fly FM
+https://n17.rcs.revma.com/drakdf8mtd3vv/17_yqh4q5wwxrl502/playlist.m3u8 / Hot FM
+https://n02.rcs.revma.com/qp0xrd9mtd3vv/2_1kynr3n0f0ll702/playlist.m3u8 / Eight FM
+https://n06.rcs.revma.com/3930238mtd3vv / Kool FM
+https://d2kziuzkf9oizb.cloudfront.net/rd003/chunklist.m3u8 / Pilihan FM
+https://d2kziuzkf9oizb.cloudfront.net/rd001/chunklist.m3u8 / Pelangi FM
+https://d2kziuzkf9oizb.cloudfront.net/rd002/chunklist.m3u8 / Harmoni
+https://d2kziuzkf9oizb.cloudfront.net/rd004/chunklist.m3u8 / Nur Islam
+https://29306.live.streamtheworld.com/RADIOBISNESAAC.aac / Radio Bisnes
+https://28153.live.streamtheworld.com/MUZIKFMAAC.aac / Radio Muzik
+https://28103.live.streamtheworld.com/LIMBANGAAC.aac / Limbang FM
+https://n11.rcs.revma.com/c718dfvbv4uvv/11_1sxy6b8dg8sid02/playlist.m3u8 / Jazz
+https://n05.rcs.revma.com/z56xa78mtd3vv / Molek FM 
+https://n04.rcs.revma.com/h34x4kgg9hhvv / Best FM
+https://n09a-eu.rcs.revma.com/51qe53rv0y3vv / Cats FM
+https://servidor30-2.brlogic.com:7048/live / Bapakku FM
+http://167.114.131.90:6156/; / Impian FM 
+http://192.99.8.192:3142/stream / Alam Maya FM
+https://usa3.fastcast4u.com/proxy/gegarmuzikfm?mp=/1 / Gegar Muzik FM
+http://185.109.169.80:8009/stream?icy=https / Dunia Muzik 
+http://radio.kcfm.org:8000/stream / KC FM
+https://havocfmradio.radioca.st/stream / Havoc FM
+https://radio.sinarkotafm.com/listen/sinarkotafm/radio.mp3 / Sinar Kota FM
+https://c16.radioboss.fm:8450/stream / ANF FM
+https://cast3.asurahosting.com/proxy/myfriend/stream / MyFriend
+https://play.thestreamtech.com:7038/index.html / Kristal FM
+https://d2kziuzkf9oizb.cloudfront.net/rd005/chunklist.m3u8 / Nasional FMB
 
->Black Metal Radio<
+// Indonesia Radio
+https://stream.zeno.fm/d16n50mkzhhvv / Tambang Kenangan
+https://28093.live.streamtheworld.com/RAKITAAAC_SC / Rakita FM
+https://wz.mari.co.id:1936/web_jakfm/jakfm/chunklist_w1214746400.m3u8 / Jak FM
+https://ic.mari.co.id:8443/genfm / Gen FM
+No Link / Kis FM
+https://wz.mari.co.id:1936/web_mostfm/mostfm/chunklist_w1095551871.m3u8 / Most FM
+No Link / Mustang FM
+https://playerservices.streamtheworld.com/api/livestream-redirect/RIA897FM_PREM.aac / https://22403.live.streamtheworld.com/RIA897FM_PREM.aac / Ria
+
+
+// Black Metal Radio
 https://trueblackmetalradio.com:8000/radio / Black Metal Radio
 https://moshhead-blackmetal.stream.laut.fm/moshhead-blackmetal / Mosh Head BM
 https://s2.free-shoutcast.com/stream/18092 / Northern Metal Radio Extreme
 https://stream.zeno.fm/t9wdzppre5zuv / Black Metal Rituals Radio
 https://stream.zeno.fm/63y9011za0hvv / Rádio El Black Metal
 https://stream.zeno.fm/edh4zta40f9uv / Metal Blood
+http://stream.blackmetal.live:8000/stream.ogg.m3u / Black Metal
 
->English<
+// English Radio
 https://moshhead-lovesongs.stream.laut.fm/moshhead-lovesongs / Most Head Lovesong
 https://wvcwradio.vcu.edu:8000/wvcw / WVCW
 
->KPop<
+// KPop Radio
 https://listen.moe/kpop/fallback - Listen Moe (Kpop)
+https://n02.rcs.revma.com/a425s9z711uvv/2_1wiaf9sbm551n02/playlist.m3u8 / KBS World
