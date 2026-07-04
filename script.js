@@ -91,17 +91,31 @@ var yt, timer;
     }
 
     function togglePlay() {
-        var btn = document.getElementById('main-play-btn');
-        if(yt && yt.getPlayerState) {
-            var s = yt.getPlayerState();
-            if(s == 1) { yt.pauseVideo(); btn.innerHTML = '&#9654;'; } 
-            else { yt.playVideo(); btn.innerHTML = '&#10074;&#10074;'; }
-        } else {
-            var a = document.getElementById('aud-engine');
-            if(a.paused) { a.play(); btn.innerHTML = '&#10074;&#10074;'; } 
-            else { a.pause(); btn.innerHTML = '&#9654;'; }
+    var btn = document.getElementById('main-play-btn');
+    if(yt && yt.getPlayerState) {
+        var s = yt.getPlayerState();
+        if(s == 1) { 
+            yt.pauseVideo(); 
+            btn.innerHTML = '&#9654;'; 
+            btn.style.paddingLeft = '5px'; // Tambah padding bila jadi ikon Play
+        } else { 
+            yt.playVideo(); 
+            btn.innerHTML = '&#10074;&#10074;'; 
+            btn.style.paddingLeft = '0px'; // Buang padding bila jadi ikon Pause
+        }
+    } else {
+        var a = document.getElementById('aud-engine');
+        if(a.paused) { 
+            a.play(); 
+            btn.innerHTML = '&#10074;&#10074;'; 
+            btn.style.paddingLeft = '0px'; 
+        } else { 
+            a.pause(); 
+            btn.innerHTML = '&#9654;'; 
+            btn.style.paddingLeft = '5px'; 
         }
     }
+}
 
     function nextTrack() { if(yt && yt.nextVideo) yt.nextVideo(); }
     function prevTrack() { if(yt && yt.previousVideo) yt.previousVideo(); }
