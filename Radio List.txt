@@ -99,9 +99,9 @@ https://stream.zeno.fm/d16n50mkzhhvv / Tambang Kenangan
 https://28093.live.streamtheworld.com/RAKITAAAC_SC / Rakita FM
 https://wz.mari.co.id:1936/web_jakfm/jakfm/chunklist_w1214746400.m3u8 / Jak FM
 https://ic.mari.co.id:8443/genfm / Gen FM
-No Link / Kis FM
+https://wz.mari.co.id:1936/web_kisfm/kisfm/chunklist_w1844020596.m3u8 / Kis FM
 https://wz.mari.co.id:1936/web_mostfm/mostfm/chunklist_w1095551871.m3u8 / Most FM
-No Link / Mustang FM
+https://wz.mari.co.id:1936/web_mustangfm/mustangfm/chunklist_w760264136.m3u8 / Mustang FM
 https://playerservices.streamtheworld.com/api/livestream-redirect/RIA897FM_PREM.aac / https://22403.live.streamtheworld.com/RIA897FM_PREM.aac / Ria
 
 // Black Metal Radio
