@@ -1,0 +1,3 @@
+git add nama_folder/.gitkeep
+git commit -m "Add empty folder"
+git push
